@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shirwal Circle — Local businesses</title>
+  <meta name="description" content="Shirwal Circle: directory of businesses in Shirwal. Search, filter and contact local shops and services." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Shirwal Circle</h1>
+      <nav class="nav">
+        <a href="#list">Businesses</a>
+        <a href="#add">Add Business</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>Find trusted local businesses in Shirwal</h2>
+      <p>Search by name, category or contact businesses directly via call, WhatsApp or email.</p>
+
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search businesses or services..." aria-label="Search businesses" />
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="">All categories</option>
+        </select>
+        <button id="clearBtn" title="Clear search">Clear</button>
+      </div>
+    </section>
+
+    <section id="list" class="business-list" aria-live="polite">
+      <!-- Cards injected here -->
+    </section>
+
+    <section id="add" class="add-instructions">
+      <h3>Add or update a listing</h3>
+      <p>Edit <code>businesses.json</code> in the repo to add or update businesses. See README for the JSON schema.</p>
+    </section>
+  </main>
+
+  <!-- Contact modal -->
+  <div id="contactModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button id="closeModal" class="close" aria-label="Close contact dialog">&times;</button>
+      <h3 id="modalTitle">Contact</h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="year"></span> Shirwal Circle — Built for the village community.</small>
+      <small><a href="https://github.com/kartik-009-k/Shirwal" target="_blank" rel="noopener">Source repo</a></small>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
