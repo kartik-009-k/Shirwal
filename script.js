@@ -1,144 +1,190 @@
-// script.js - loads businesses.json, renders cards, search, filter, contact modal
-const bizUrl = 'businesses.json';
+(function () {
+  // Robust modal handling wrapped in DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', () => {
+    const FOCUSABLE_SELECTORS = [
+      'a[href]',
+      'area[href]',
+      'input:not([disabled]):not([type="hidden"])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      'button:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
 
-const state = {
-  businesses: [],
-  categories: new Set()
-};
+    // Keep track of the currently open modal and the element that had focus before opening
+    let openModal = null;
+    let previousActiveElement = null;
 
-const els = {
-  list: document.querySelector('.business-list'),
-  search: document.getElementById('search'),
-  category: document.getElementById('categoryFilter'),
-  clearBtn: document.getElementById('clearBtn'),
-  year: document.getElementById('year'),
-  modal: document.getElementById('contactModal'),
-  modalBody: document.getElementById('modalBody'),
-  closeModal: document.getElementById('closeModal')
-};
+    function getModal(selectorOrElement) {
+      if (!selectorOrElement) return null;
+      if (typeof selectorOrElement === 'string') {
+        try {
+          return document.querySelector(selectorOrElement);
+        } catch (e) {
+          return null;
+        }
+      }
+      return selectorOrElement instanceof Element ? selectorOrElement : null;
+    }
 
-function sanitizeNumber(n){
-  return (n || '').replace(/[^\d+]/g,'');
-}
+    function trapFocus(modal) {
+      if (!modal) return;
+      const focusables = Array.from(modal.querySelectorAll(FOCUSABLE_SELECTORS));
+      if (!focusables.length) return;
 
-function openModal(html){
-  els.modalBody.innerHTML = html;
-  els.modal.hidden = false;
-  els.modal.setAttribute('aria-hidden','false');
-}
-function closeModal(){
-  els.modal.hidden = true;
-  els.modal.setAttribute('aria-hidden','true');
-  els.modalBody.innerHTML = '';
-}
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
 
-els.closeModal.addEventListener('click', closeModal);
-els.modal.addEventListener('click', (e)=>{ if(e.target === els.modal) closeModal(); });
-document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+      function handleTab(e) {
+        if (e.key !== 'Tab') return;
+        if (focusables.length === 1) {
+          e.preventDefault();
+          first.focus();
+          return;
+        }
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
 
-async function loadBusinesses(){
-  try{
-    const res = await fetch(bizUrl);
-    const data = await res.json();
-    state.businesses = data;
-    data.forEach(b=> b.category && state.categories.add(b.category));
-    populateCategoryOptions();
-    renderList();
-  }catch(err){
-    console.error('Could not load businesses.json', err);
-    els.list.innerHTML = '<p style="grid-column:1/-1;color:#c00">Failed to load business data.</p>';
-  }
-}
+      modal.__modalTabHandler = handleTab;
+      modal.addEventListener('keydown', handleTab);
+    }
 
-function populateCategoryOptions(){
-  const cats = [...state.categories].sort();
-  cats.forEach(c=>{
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    els.category.appendChild(o);
-  });
-}
+    function releaseFocusTrap(modal) {
+      if (!modal || !modal.__modalTabHandler) return;
+      modal.removeEventListener('keydown', modal.__modalTabHandler);
+      delete modal.__modalTabHandler;
+    }
 
-function renderList(){
-  const q = (els.search.value || '').toLowerCase().trim();
-  const cat = els.category.value;
-  const items = state.businesses.filter(b=>{
-    if(cat && b.category !== cat) return false;
-    if(!q) return true;
-    return (b.name + ' ' + (b.description||'') + ' ' + (b.category||'')).toLowerCase().includes(q);
-  });
+    function openModalElement(modal) {
+      modal = getModal(modal);
+      if (!modal || openModal === modal) return;
 
-  if(items.length === 0){
-    els.list.innerHTML = '<p style="grid-column:1/-1;color:var(--muted)">No businesses found. Try clearing filters.</p>';
-    return;
-  }
+      previousActiveElement = document.activeElement;
+      openModal = modal;
 
-  els.list.innerHTML = '';
-  items.forEach(b => {
-    const card = document.createElement('article');
-    card.className = 'card';
-    const thumbUrl = b.image || `https://source.unsplash.com/collection/190727/800x600?sig=${encodeURIComponent(b.name)}`;
-    card.innerHTML = `
-      <div class="thumb" style="background-image:url('${thumbUrl}')" role="img" aria-label="${b.name} image"></div>
-      <h4>${b.name}</h4>
-      <p class="desc">${b.description || ''}</p>
-      <div class="meta">
-        <div class="tags"><span class="tag">${b.category||'Other'}</span></div>
-        <div class="tags"><small style="color:var(--muted)">${b.address || ''}</small></div>
-      </div>
-      <div class="actions">
-        ${b.phone ? `<a class="btn call" href="tel:${sanitizeNumber(b.phone)}">Call</a>` : ''}
-        ${b.whatsapp ? `<a class="btn whatsapp" target="_blank" rel="noopener" href="https://wa.me/${sanitizeNumber(b.whatsapp)}">WhatsApp</a>` : ''}
-        ${b.email ? `<a class="btn email" href="mailto:${b.email}">Email</a>` : ''}
-        <button class="btn copy" data-phone="${b.phone||''}">Copy phone</button>
-        <button class="btn" data-details>Details</button>
-      </div>
-    `;
-    // details button handler
-    const detailsBtn = card.querySelector('[data-details]');
-    detailsBtn.addEventListener('click', ()=>{
-      const html = `
-        <strong>${b.name}</strong>
-        <p>${b.description||''}</p>
-        <p><strong>Category:</strong> ${b.category||'—'}</p>
-        <p><strong>Address:</strong> ${b.address||'—'}</p>
-        <p><strong>Hours:</strong> ${b.hours||'—'}</p>
-        <p>
-          ${b.phone ? `<a class="btn call" href="tel:${sanitizeNumber(b.phone)}">Call</a>` : ''}
-          ${b.whatsapp ? `<a class="btn whatsapp" target="_blank" rel="noopener" href="https://wa.me/${sanitizeNumber(b.whatsapp)}">WhatsApp</a>` : ''}
-          ${b.email ? `<a class="btn email" href="mailto:${b.email}">Email</a>` : ''}
-          ${b.website ? `<a class="btn" target="_blank" rel="noopener" href="${b.website}">Visit website</a>` : ''}
-          <button id="copyModalPhone" class="btn copy" data-phone="${b.phone||''}">Copy phone</button>
-        </p>
-      `;
-      openModal(html);
-      const copyBtn = document.getElementById('copyModalPhone');
-      if(copyBtn){
-        copyBtn.addEventListener('click', ()=>{ navigator.clipboard.writeText(copyBtn.dataset.phone || '').then(()=>{ copyBtn.textContent = 'Copied'; setTimeout(()=>copyBtn.textContent='Copy phone',1200); }); });
+      modal.setAttribute('aria-hidden', 'false');
+      modal.classList.add('is-open');
+
+      // make modal focusable
+      if (!modal.hasAttribute('tabindex')) modal.setAttribute('tabindex', '-1');
+
+      // focus the first meaningful element inside modal
+      const focusable = modal.querySelector(FOCUSABLE_SELECTORS);
+      (focusable || modal).focus();
+
+      // trap focus
+      trapFocus(modal);
+
+      // add escape and overlay click handlers
+      document.addEventListener('keydown', handleDocumentKeydown);
+    }
+
+    function closeModalElement(modal, options = {}) {
+      modal = getModal(modal) || openModal;
+      if (!modal) return;
+
+      modal.setAttribute('aria-hidden', 'true');
+      modal.classList.remove('is-open');
+
+      releaseFocusTrap(modal);
+
+      // restore focus
+      try {
+        if (options.restoreFocus !== false && previousActiveElement && previousActiveElement.focus) {
+          previousActiveElement.focus();
+        }
+      } catch (e) {
+        // ignore focus restore errors
+      }
+
+      openModal = null;
+      previousActiveElement = null;
+
+      document.removeEventListener('keydown', handleDocumentKeydown);
+    }
+
+    function handleDocumentKeydown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        if (openModal) closeModalElement(openModal);
+      }
+    }
+
+    // Delegated event handling for open and close triggers
+    // Open triggers: [data-modal-target] or [data-modal-open] attributes
+    document.addEventListener('click', (e) => {
+      const openTrigger = e.target.closest('[data-modal-target], [data-modal-open]');
+      if (openTrigger) {
+        e.preventDefault();
+        const target = openTrigger.getAttribute('data-modal-target') || openTrigger.getAttribute('data-modal-open');
+        if (target) {
+          openModalElement(target);
+        } else {
+          // Fallback: data-modal-open could be used as boolean on a button located next to a modal element
+          const autoModal = openTrigger.closest('[data-modal]') || document.querySelector('.modal');
+          if (autoModal) openModalElement(autoModal);
+        }
+        return;
+      }
+
+      const closeTrigger = e.target.closest('[data-modal-close]');
+      if (closeTrigger) {
+        e.preventDefault();
+        // allow data-modal-close to specify the selector or be inside the modal
+        const target = closeTrigger.getAttribute('data-modal-close');
+        if (target) closeModalElement(target);
+        else closeModalElement();
+        return;
+      }
+
+      // Click on modal overlay to close: look for element with attribute data-modal or role="dialog"
+      const modalOverlay = e.target.closest('[data-modal], .modal, [role="dialog"]');
+      if (modalOverlay && modalOverlay === e.target) {
+        // clicked directly on overlay/background
+        closeModalElement(modalOverlay);
       }
     });
 
-    // copy phone handler
-    const copyBtn = card.querySelector('.btn.copy');
-    if(copyBtn){
-      copyBtn.addEventListener('click', ()=>{
-        const ph = copyBtn.dataset.phone || '';
-        navigator.clipboard.writeText(ph).then(()=>{ copyBtn.textContent = 'Copied'; setTimeout(()=>copyBtn.textContent='Copy phone',1200); });
+    // Also listen for clicks specifically on the modal overlay area for better reliability
+    // This covers cases where overlay class is .modal or data-modal attribute is used
+    const overlaySelectors = '[data-modal], .modal, [role="dialog"]';
+    Array.from(document.querySelectorAll(overlaySelectors)).forEach((overlay) => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModalElement(overlay);
+      });
+    });
+
+    // Provide a small public API on window in case inline handlers or other scripts rely on it
+    window.ModalManager = {
+      open(selectorOrElement) {
+        openModalElement(selectorOrElement);
+      },
+      close(selectorOrElement) {
+        closeModalElement(selectorOrElement);
+      },
+      isOpen() {
+        return !!openModal;
+      }
+    };
+
+    // If there's a specific contact modal identified by #contactModal, ensure it gets overlay click handler
+    const contactModal = document.getElementById('contactModal');
+    if (contactModal) {
+      contactModal.addEventListener('click', (e) => {
+        if (e.target === contactModal) closeModalElement(contactModal);
       });
     }
 
-    els.list.appendChild(card);
+    // Defensive: ensure any existing inline data attributes on contact open/close buttons will work
+    // No further action needed here since delegation above covers them
   });
-}
-
-els.search.addEventListener('input', renderList);
-els.category.addEventListener('change', renderList);
-els.clearBtn.addEventListener('click', ()=>{
-  els.search.value = '';
-  els.category.value = '';
-  renderList();
-});
-
-document.getElementById('year').textContent = new Date().getFullYear();
-
-loadBusinesses();
+})();
