@@ -1,39 +1,82 @@
-// script.js - loads businesses.json, renders cards, search, filter, contact modal
-// Improved: wrapped in DOMContentLoaded, robust null checks, better modal event handling.
+let businesses = [];
+const listEl = document.getElementById("businessList");
+const searchEl = document.getElementById("search");
+const filterEl = document.getElementById("categoryFilter");
 
-document.addEventListener('DOMContentLoaded', () => {
-  const bizUrl = 'businesses.json';
+async function loadData() {
+  const res = await fetch("businesses.json");
+  businesses = await res.json();
+  renderCategories();
+  renderList();
+}
 
-  const state = {
-    businesses: [],
-    categories: new Set()
-  };
+function renderCategories() {
+  const cats = [...new Set(businesses.map(b => b.category))];
+  cats.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.innerText = c;
+    filterEl.appendChild(opt);
+  });
+}
 
-  const els = {
-    list: document.querySelector('.business-list'),
-    search: document.getElementById('search'),
-    category: document.getElementById('categoryFilter'),
-    clearBtn: document.getElementById('clearBtn'),
-    year: document.getElementById('year'),
-    modal: document.getElementById('contactModal'),
-    modalBody: document.getElementById('modalBody'),
-    closeBtn: document.getElementById('closeModal')
-  };
+function renderList() {
+  const searchVal = searchEl.value.toLowerCase();
+  const filterVal = filterEl.value;
 
-  // Safe helper: verify required elements
-  function elExists(...elements) {
-    return elements.every(e => e !== null && e !== undefined);
-  }
+  listEl.innerHTML = "";
 
-  function sanitizeNumber(n) {
-    return (n || '').replace(/[^\d+]/g, '');
-  }
+  businesses
+    .filter(b =>
+      b.name.toLowerCase().includes(searchVal) &&
+      (filterVal === "" || b.category === filterVal)
+    )
+    .forEach(b => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${b.image || 'https://placehold.co/600x400'}">
+        <h3>${b.name}</h3>
+        <p>${b.category}</p>
+        <button>Details</button>
+      `;
+      card.querySelector("button").onclick = () => openModal(b);
+      listEl.appendChild(card);
+    });
+}
 
-  function openModal(html) {
-    if (!els.modal || !els.modalBody) return;
-    els.modalBody.innerHTML = html;
-    els.modal.hidden = false;
-    els.modal.setAttribute('aria-hidden', 'false');
+function openModal(b) {
+  document.getElementById("modalImage").src = b.image || "";
+  document.getElementById("modalName").innerText = b.name;
+  document.getElementById("modalDesc").innerText = b.description;
+  document.getElementById("modalAddr").innerText = "📍 " + b.address;
+  document.getElementById("modalHours").innerText = "🕒 " + b.hours;
+
+  const actions = document.getElementById("modalActions");
+  actions.innerHTML = "";
+
+  if (b.phone) addAction(actions, "Call", `tel:${b.phone}`);
+  if (b.whatsapp) addAction(actions, "WhatsApp", `https://wa.me/${b.whatsapp.replace(/[^\d]/g,'')}`);
+  if (b.email) addAction(actions, "Email", `mailto:${b.email}`);
+  if (b.website) addAction(actions, "Website", b.website);
+
+  document.getElementById("modal").classList.remove("hidden");
+}
+
+function addAction(container, label, link) {
+  const btn = document.createElement("button");
+  btn.innerText = label;
+  btn.onclick = () => window.open(link, "_blank");
+  container.appendChild(btn);
+}
+
+document.getElementById("closeModal").onclick = () =>
+  document.getElementById("modal").classList.add("hidden");
+
+searchEl.oninput = renderList;
+filterEl.onchange = renderList;
+
+loadData();
     // Prevent page scroll while modal is open
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
