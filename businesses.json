@@ -2,73 +2,13 @@
   {
     "name": "Shirwal Grocers",
     "category": "Grocery",
-    "description": "Fresh produce, daily essentials and household items.",
-    "phone": "+911234567890",
+    "description": "Daily essentials and fresh produce.",
+    "phone": "+91-1234567890",
     "whatsapp": "+911234567890",
-    "email": "grocers@shirwal.example",
-    "website": "",
-    "address": "Market Road, Shirwal",
-    "hours": "8:00 AM - 9:00 PM",
-    "image": "https://images.unsplash.com/photo-1542831371-d531d36971e6"
-  },
-  {
-    "name": "Shirwal Medical Store",
-    "category": "Pharmacy",
-    "description": "Prescription medicines and health products.",
-    "phone": "+919876543210",
-    "whatsapp": "+919876543210",
-    "email": "meds@shirwal.example",
-    "website": "",
-    "address": "Near Bus Stand, Shirwal",
-    "hours": "8:00 AM - 8:00 PM",
-    "image": "https://images.unsplash.com/photo-1580281657521-3b6018f0b9d8"
-  },
-  {
-    "name": "Shirwal Bakery",
-    "category": "Bakery",
-    "description": "Fresh breads, snacks and sweets baked daily.",
-    "phone": "+919812345678",
-    "whatsapp": "+919812345678",
-    "email": "",
-    "website": "",
-    "address": "Shop No. 5, Central Market",
-    "hours": "7:00 AM - 7:00 PM",
-    "image": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe"
-  },
-  {
-    "name": "Shirwal Tailors",
-    "category": "Tailoring",
-    "description": "Custom stitching and alterations.",
-    "phone": "+919900112233",
-    "whatsapp": "+919900112233",
-    "email": "tailor@shirwal.example",
-    "website": "",
-    "address": "Lane 2, Old Town",
-    "hours": "10:00 AM - 7:00 PM",
-    "image": "https://images.unsplash.com/photo-1520975910043-8f29e1bbd011"
-  },
-  {
-    "name": "Shirwal Electric Works",
-    "category": "Services",
-    "description": "Electrical repairs, wiring and appliance service.",
-    "phone": "+919811223344",
-    "whatsapp": "+919811223344",
-    "email": "electric@shirwal.example",
-    "website": "",
-    "address": "Industrial Area",
-    "hours": "9:00 AM - 6:00 PM",
-    "image": "https://images.unsplash.com/photo-1511451349157-3f36a6a2f6a9"
-  },
-  {
-    "name": "Shirwal Cafe",
-    "category": "Food & Drink",
-    "description": "Tea, snacks and light meals. Free WiFi.",
-    "phone": "+919988776655",
-    "whatsapp": "+919988776655",
-    "email": "cafe@shirwal.example",
-    "website": "",
-    "address": "Main Square",
-    "hours": "7:30 AM - 10:00 PM",
-    "image": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0"
+    "email": "shop@example.com",
+    "website": "https://example.com",
+    "address": "Main road, Shirwal",
+    "hours": "8 AM - 9 PM",
+    "image": "https://images.unsplash.com/photo-158…"
   }
 ]
