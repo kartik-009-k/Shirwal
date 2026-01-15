@@ -1,44 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shirwal Circle — Businesses Directory</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shirwal Circle — Local businesses</title>
+  <meta name="description" content="Shirwal Circle: directory of businesses in Shirwal. Search, filter and contact local shops and services." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Shirwal Circle</h1>
+      <nav class="nav">
+        <a href="#list">Businesses</a>
+        <a href="#add">Add Business</a>
+      </nav>
+    </div>
+  </header>
 
-<header>
-  <h1>Shirwal Circle</h1>
-  <p>Find local businesses in Shirwal</p>
-  <input id="search" placeholder="Search shops or services...">
-  <select id="categoryFilter">
-    <option value="">All Categories</option>
-  </select>
-</header>
+  <main class="container">
+    <section class="hero">
+      <h2>Find trusted local businesses in Shirwal</h2>
+      <p>Search by name, category or contact businesses directly via call, WhatsApp or email.</p>
 
-<main id="businessList"></main>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search businesses or services..." aria-label="Search businesses" />
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="">All categories</option>
+        </select>
+        <button id="clearBtn" title="Clear search">Clear</button>
+      </div>
+    </section>
 
-<div id="modal" class="hidden">
-  <div id="modalContent">
-    <button id="closeModal">×</button>
-    <img id="modalImage" alt="" />
-    <h2 id="modalName"></h2>
-    <p id="modalDesc"></p>
-    <p id="modalHours"></p>
-    <p id="modalAddr"></p>
-    <div id="modalActions"></div>
-  </div>
-</div>
-
-<footer>
-  Made for Shirwal with ❤️<br>
-  A simple directory for buyers and businesses
-</footer>
-
-<script src="script.js"></script>
-</body>
-</html>
+    <section id="list" class="business-list" aria-live="polite">
+      <!-- Cards injected here -->
     </section>
 
     <section id="add" class="add-instructions">
