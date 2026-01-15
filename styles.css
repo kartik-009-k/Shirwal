@@ -9,11 +9,21 @@
 }
 
 body {
-  margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, sans-serif;
 }
+
+.card,
+header,
+footer,
+input,
+select,
+textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
 
 header {
   text-align: center;
