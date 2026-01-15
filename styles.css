@@ -1,3 +1,130 @@
+:root {
+  --bg: #0f0f0f;
+  --card: #1a1a1a;
+  --border: #2a2a2a;
+  --text: #e5e5e5;
+  --muted: #9b9b9b;
+  --accent: #3b82f6;
+  --radius: 12px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+header input, header select {
+  width: 90%;
+  max-width: 400px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  margin: 0 0 4px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.card button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+#modalContent {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  max-width: 480px;
+  width: 90%;
+  border: 1px solid var(--border);
+}
+
+#modalActions button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: white;
+}
+
+#closeModal {
+  float: right;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
 :root{
   --max-width:1100px;
   --accent:#0b6cf5;
