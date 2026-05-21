@@ -1,54 +1,12 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shirwal Circle — Local businesses</title>
-  <meta name="description" content="Shirwal Circle: directory of businesses in Shirwal. Search, filter and contact local shops and services." />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1 class="brand">Shirwal Circle</h1>
-      <nav class="nav">
-        <a href="#list">Businesses</a>
-        <a href="https://forms.gle/Bm9FenapkX5W9yCo6" target="_blank" rel="noopener">Add Business</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <h2>Find trusted local businesses in Shirwal</h2>
-      <p>Search by name, category or contact businesses directly via call, WhatsApp or email.</p>
-
-      <div class="controls">
-        <input id="search" type="search" placeholder="Search businesses or services..." aria-label="Search businesses" />
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="">All categories</option>
-        </select>
-        <button id="clearBtn" title="Clear search">Clear</button>
-      </div>
-    </section>
-
-    <section id="list" class="business-list" aria-live="polite">
-      <!-- Cards injected here -->
-    </section>
-
-    <section id="add" class="add-instructions">
-      <h3>Add or update a listing</h3>
-      <p>To add your business, please fill the <a href="https://forms.gle/Bm9FenapkX5W9yCo6" target="_blank" rel="noopener">Add Business form</a> </p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>© <span id="year"></span> Shirwal Circle — Built for the village community.</small>
-      <small><a href="https://github.com/kartik-009-k/Shirwal" target="_blank" rel="noopener">Source repo</a></small>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shirwal Connect</title>
+  </head>
+  <body class="bg-slate-950">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
