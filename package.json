@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "type": "module",
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/Shirwal/",
+  "homepage": "https://kartik-009-k.github.io/Shirwal/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
